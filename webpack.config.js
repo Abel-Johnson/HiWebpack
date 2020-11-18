@@ -8,6 +8,8 @@ const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCssPlugin = require('optimize-css-assets-webpack-plugin');
 
 /*
 test 字段是匹配规则，针对符合规则的文件进行处理。
@@ -66,22 +68,24 @@ npx webpack --mode=development  => npx webpack
         */
 
         //loader 的执行顺序是从右向左执行的，也就是后面的 loader 先执行，上面 loader 的执行顺序为: less-loader ---> postcss-loader ---> css-loader ---> style-loader
-        use: ['style-loader', 'css-loader', {
-          loader: 'postcss-loader',
-          options: {
-            // ident: "postcss",
-            postcssOptions: {
-              plugins: () => [
-                require('autoprefixer')({
-                  "overrideBrowserslist": [
-                    ">0.25%",
-                    "not dead"
-                  ]
-                })
-              ]
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              // ident: "postcss",
+              postcssOptions: {
+                plugins: () => [
+                  require('autoprefixer')()
+                ]
+              }
             }
-          }
-        }, 'less-loader'],
+          },
+          'less-loader'
+        ],
         exclude: /node_modules/
       },
       {
@@ -115,15 +119,21 @@ npx webpack --mode=development  => npx webpack
         removeAttributeQuotes: false, //是否删除属性的双引号
         collapseWhitespace: false, //是否折叠空白
       },
+      chunks: ['index']
       // hash: true //是否加上hash，默认是 false
     }),
     new BundleAnalyzerPlugin({
       analyzerPort: 8888,
       openAnalyzer: false
     }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[hash:5].css' //个人习惯将css文件放在单独目录下
+    }),
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['**/*', '!dll', '!dll/**'] //不删除dll目录下的文件(我们并不希望整个 dist 目录都被清空，比如，我们不希望，每次打包的时候，都删除 dll 目录，以及 dll 目录下的文件或子目录)
-    })//每次打包前清空dist目录
+    }),//每次打包前清空dist目录
+    new OptimizeCssPlugin()
+
   ],
   //关于 webpack-dev-server 更多的配置: 'https://webpack.js.org/configuration/dev-server/'
   devServer: {
