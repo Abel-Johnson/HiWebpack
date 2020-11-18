@@ -187,3 +187,9 @@ fetch("/login/account", {
 可以在控制台中看到接口返回的成功的数据。
 
 进阶篇就到这里结束啦，下周约优化篇。
+
+
+[带你深度解锁Webpack系列(优化篇)](https://segmentfault.com/a/1190000022205477)
+我们可以通过 exclude、include 配置来确保转译尽可能少的文件。顾名思义，exclude 指定要排除的文件，include 指定要包含的文件。
+
+exclude 的优先级高于 include，在 include 和 exclude 中使用绝对路径数组，尽量避免 exclude，更倾向于使用 include。

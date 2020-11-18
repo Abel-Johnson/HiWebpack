@@ -44,6 +44,7 @@ npx webpack --mode=development  => npx webpack
         use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: true,
             presets: ["@babel/preset-env"],
             plugins: [
               [
@@ -55,7 +56,9 @@ npx webpack --mode=development  => npx webpack
             ]
           }
         },
-        exclude: /node_modules/ //排除 node_modules 目录
+        // exclude: /node_modules/ //排除 node_modules 目录
+        include: [path.resolve(__dirname, 'src')]
+
       },
       {
         test: /\.(le|c)ss$/, //webpack 不能直接处理 css，需要借助 loader。如果是 .css，我们需要的 loader 通常有： style-loader、css-loader，考虑到兼容性问题，还需要 postcss-loader，而如果是 less 或者是 sass 的话，还需要 less-loader 和 sass-loader，这里配置一下 less 和 css 文件(sass 的话，使用 sass-loader即可):
@@ -86,7 +89,9 @@ npx webpack --mode=development  => npx webpack
           },
           'less-loader'
         ],
-        exclude: /node_modules/
+        // exclude: /node_modules/
+        include: [path.resolve(__dirname, 'src')]
+
       },
       {
         test: /\.(png|jpg|gif|jpeg|webp|svg|eot|ttf|woff|woff2)$/,
@@ -101,7 +106,9 @@ npx webpack --mode=development  => npx webpack
             }
           }
         ],
-        exclude: /node_modules/
+        // exclude: /node_modules/
+        include: [path.resolve(__dirname, 'images')]
+
       },
       // {
       //   test: /.html$/,
